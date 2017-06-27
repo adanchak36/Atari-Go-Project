@@ -11,8 +11,6 @@ void player2moving(int *player2_i, int *player2_z);// Second human player for 2 
 
 int game_results(char grid[height][width]);
 
-//function for player2moving
-
 //check score function (entire game function)
 //void playgame()
 
@@ -66,6 +64,7 @@ int main(void){
         player1moving(&player1_i, &player1_z);
         print_grid(grid, player1_i, player1_z,player2_i, player2_z);
         
+        
         if(game_results(grid) == 1){
             break;
         }
@@ -74,6 +73,7 @@ int main(void){
         player2moving(&player2_i, &player2_z);
         
         print_grid(grid, player1_i, player1_z,player2_i, player2_z);
+        
         
         if(game_results(grid) == 1){
             break;
@@ -136,13 +136,13 @@ void player1moving(int *player1_i, int *player1_z){
         
         if((int)*player1_i < 0 || (int)*player1_z < 0){
             printf("Error: Values cannot be negative");
-        }else if((int)*player1_i > height || (int)*player1_z > width){
+        }else if((int)*player1_i > (height - 1) || (int)*player1_z > (width - 1)){
             printf("Error: Values cannot be greater than height(%d) or width(%d)\n", height, width);
         }
         
         //updates values of player1_i, player1_z, values can now go from main into print_grid
         //bounds checking for right grid size here
-    }while((int)*player1_i < 0 || (int)*player1_z < 0 || (int)*player1_i > height || (int)*player1_z > width);
+    }while((int)*player1_i < 0 || (int)*player1_z < 0 || (int)*player1_i > (height - 1) || (int)*player1_z > (width - 1));
     
     return;
 }
@@ -155,13 +155,13 @@ void player2moving(int *player2_i, int *player2_z){
         
         if((int)*player2_i < 0 || (int)*player2_z < 0){
             printf("Error: Values cannot be negative");
-        }else if((int)*player2_i > height || (int)*player2_z > width){
+        }else if((int)*player2_i > (height - 1) || (int)*player2_z > (width - 1)){
             printf("Error: Values cannot be greater than height(%d) or width(%d)\n", height, width);
         }
         
         //updates values of player1_i, player1_z, values can now go from main into print_grid
         //bounds checking for right grid size here
-    }while((int)*player2_i < 0 || (int)*player2_z < 0 || (int)*player2_i > height || (int)*player2_z > width);
+    }while((int)*player2_i < 0 || (int)*player2_z < 0 || (int)*player2_i > (height - 1) || (int)*player2_z > (width - 1));
     
     return;
 }
@@ -173,30 +173,64 @@ int game_results(char grid[height][width]){
     for(i = 0; i < height; ++i){
         for(z = 0; z < width; ++z){
             //Special corner cases
-            if((i == 0 && z == 0) || (i == 0 && z == width) || (i == height && z == 0) ||((i == height) && (z == width))){
-                if(i == 0){ //(0,0) and (0,2)
-                    if(z == 0){//(0,0)
-                        if((grid[i][z] != grid[i][z+1]) && (grid[i][z] != grid[i+1][z])){
-                            printf("You lost the game");
-                            return(1);
+                //BUG: PERIODS ARE THE SAME VALUE
+            
+            
+            if((i == 0 && z == 0) || (i == 0 && z == width) || (i == height && z == 0) ||((i == height) && (z == width))){ // (0,0), (0,4), (4,0), (4,4)
+                if(i == 0){ //(0,0) and (0,4)
+                    if(grid[i+1][z] != '.'){/* No period*/
+            
+                        if(z == 0){//(0,0)
+                            if((grid[i][z] != grid[i][z+1]) && (grid[i][z] != grid[i+1][z])){
+                                printf("You lost the game at (0,0)\n");
+                                return(1);
+                            }
+                        }else{//(0,4)
+                            if((grid[i][z] != grid[i][z-1]) && (grid[i][z] != grid[i+1][z])){
+                                printf("You lost the game at (0,4)\n");
+                                return(1);
+                            }
                         }
-                    }else{//(0,2)
-                        if((grid[i][z] != grid[i][z-1]) && (grid[i][z] != grid[i+1][z])){
-                            printf("You lost the game");
-                            return(1);
+                        
+                    }/* No period */else{//Has Period
+                        return(0);
+                    }//Has Period
+                }/*(0,0) and (0,2)*/else{//(4,0) and (4,4)
+                    if(grid[i-1][z] != '.'){//No period
+                        
+                        if(z == 0){//(4,0)
+                            if((grid[i][z] != grid[i-1][z]) && (grid[i][z] != grid[i][z+1])){
+                                printf("You lost the game at (4,0\n)");
+                                return(1);
+                            }
+                        }else{//(4,4)
+                            if((grid[i][z] != grid[i-1][z]) && (grid[i][z] != grid[i][z-1])){
+                                printf("You lost the game at (4,4)\n");
+                                return(1);
+                            }
                         }
-                    }
+                        
+                        
+                    }/* No period */else{//Has period
+                        return(0);
+                    }//Has Period
+                    
                 }
-            }
-        }
-    }
+                
+                
+                
+                
+                
+                
+            }// (0,0), (0,4), (4,0), (4,4)
+            
+            
+        
+        }//horizontal for loop
+    }//vertical for loop
     
         
         //return 1 for player1 winning
         //return 2 for player2 winning
     return(0);
 }
-
-
-
-
