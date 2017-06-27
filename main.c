@@ -3,6 +3,8 @@
 //needs to be in header file below
 int height, width;//height and width are global variables. Used in print_grid, main, and player1, 2 moving functions
 
+void start_print_grid(char grid[height][width]);
+
 void print_grid(char grid[height][width], int player1_i, int player1_z, int player2_i, int player2_z);//function prototype for print_grid function
 
 void player1moving(int *player1_i, int *player1_z);
@@ -36,7 +38,7 @@ int main(void){
     
     
     do{
-    
+        
         printf("Enter height of grid:");
         scanf(" %d", &height);
         
@@ -51,12 +53,12 @@ int main(void){
         
     }while(((height < 4) || (height > 25)) || ((width < 4) || (width > 25))); // do while sets bounds for height and width
     
-    char grid[height][width]; // 2-d character array initialization
+    char grid[height][width]; // 2-D character array initialization
     printf("\n");
     
     
     
-    print_grid(grid, player1_i, player1_z,player2_i, player2_z);//At beginning of game display the grid
+    start_print_grid(grid);//At beginning of game display the grid and fills 2-D array
     
     
     //play game function- while loop conditions is the return of that function
@@ -82,15 +84,28 @@ int main(void){
     }
     printf("I'm out of the loop, thank goodness\n");
     printf("somebody won\n");
-
     
     
-
-
+    
+    
+    
     //Users should play game here
     // function with commands
     return(0);
 }//end of main
+
+void start_print_grid(char grid[height][width]){
+    int i, z;
+    for(i = 0; i < height; ++i){
+        printf("|"); //left boundary
+        for(z = 0; z < width; ++z){
+            grid[i][z] = '.'; //fills every space with '.' for start of game
+            printf("%c", grid[i][z]);
+        }
+        printf("|"); //right boundary
+        printf("\n");
+    }
+}//end of start_print_grid function
 
 
 
@@ -101,25 +116,28 @@ void print_grid(char grid[height][width], int player1_i, int player1_z, int play
     for(i=0; i < height; ++i){
         printf("|"); //left boundary
         for(z=0;z < width; ++z){
-            grid[height][width] = '.';
-            //checking player1 coordinates
-            if(player1_i == i){
-                if(player1_z == z){
-                    grid[height][width] = 'O';
+            if(grid[i][z] == '.'){ //Blank Slate
+                if(player1_i == i){
+                    if(player1_z == z){
+                        grid[i][z] = 'O';
+                    }
                 }
-            }
-            //checking player2 coordinates
-            if(player2_i == i){
-                if(player2_z == z){
-                    grid[height][width] = 'X';
+                //checking player2 coordinates
+                if(player2_i == i){
+                    if(player2_z == z){
+                        grid[i][z] = 'X';
+                    }
                 }
+                printf("%c", grid[i][z]);
+                
+            }else{//Either 'O' or 'X'
+                printf("%c", grid[i][z]); 
             }
-
-            printf("%c", grid[height][width]);
             
         }
         printf("|"); //right boundary
         printf("\n");
+        
     }
     
 }//end of print_grid
@@ -173,13 +191,13 @@ int game_results(char grid[height][width]){
     for(i = 0; i < height; ++i){
         for(z = 0; z < width; ++z){
             //Special corner cases
-                //BUG: PERIODS ARE THE SAME VALUE
+            //BUG: PERIODS ARE THE SAME VALUE
             
             
             if((i == 0 && z == 0) || (i == 0 && z == width) || (i == height && z == 0) ||((i == height) && (z == width))){ // (0,0), (0,4), (4,0), (4,4)
                 if(i == 0){ //(0,0) and (0,4)
                     if(grid[i+1][z] != '.'){/* No period*/
-            
+                        
                         if(z == 0){//(0,0)
                             if((grid[i][z] != grid[i][z+1]) && (grid[i][z] != grid[i+1][z])){
                                 printf("You lost the game at (0,0)\n");
@@ -225,12 +243,13 @@ int game_results(char grid[height][width]){
             }// (0,0), (0,4), (4,0), (4,4)
             
             
-        
+            
         }//horizontal for loop
     }//vertical for loop
     
-        
-        //return 1 for player1 winning
-        //return 2 for player2 winning
+    
+    //return 1 for player1 winning
+    //return 2 for player2 winning
     return(0);
 }
+
