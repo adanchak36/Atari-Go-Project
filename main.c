@@ -187,59 +187,66 @@ void player2moving(int *player2_i, int *player2_z){
 int game_results(char grid[height][width]){
     int i;//vertical counter
     int z;//horizontal counter
+    int answer; //return variable for when everything is good, to continue loop running and checking
     
     for(i = 0; i < height; ++i){
         for(z = 0; z < width; ++z){
+            printf("a\n");
             //Special corner cases
-            //BUG: PERIODS ARE THE SAME VALUE
             
             
-            if((i == 0 && z == 0) || (i == 0 && z == width) || (i == height && z == 0) ||((i == height) && (z == width))){ // (0,0), (0,4), (4,0), (4,4)
-                if(i == 0){ //(0,0) and (0,4)
+            if((i == 0 && z == 0) || (i == 0 && z == (width -1)) || (i == (height - 1) && z == 0) || (i == (height - 1) && z == (width - 1))){ // (0,0), (0,4), (4,0), (4,4)
+                if( (i== 0 && z == 0) || (i == 0 && z == (width - 1))){ //(0,0) and (0,4)
                     if(grid[i+1][z] != '.'){/* No period*/
+                        printf("I'm entering the (0,0) and (0,4) with a period\n");
                         
                         if(z == 0){//(0,0)
                             if((grid[i][z] != grid[i][z+1]) && (grid[i][z] != grid[i+1][z])){
                                 printf("You lost the game at (0,0)\n");
                                 return(1);
+                            }else{
+                                answer = 0;
                             }
                         }else{//(0,4)
                             if((grid[i][z] != grid[i][z-1]) && (grid[i][z] != grid[i+1][z])){
                                 printf("You lost the game at (0,4)\n");
                                 return(1);
+                            }else{
+                                answer = 0;
                             }
                         }
                         
                     }/* No period */else{//Has Period
-                        return(0);
+                        printf("I'm surrounded by nothing!");
+                        answer = 0;//this is the bug
                     }//Has Period
-                }/*(0,0) and (0,2)*/else{//(4,0) and (4,4)
+                }/*(0,0) and (0,4)*/else{//(4,0) and (4,4)
                     if(grid[i-1][z] != '.'){//No period
+                        printf("No period above me for (4,0)");
                         
                         if(z == 0){//(4,0)
                             if((grid[i][z] != grid[i-1][z]) && (grid[i][z] != grid[i][z+1])){
                                 printf("You lost the game at (4,0\n)");
                                 return(1);
+                            }else{
+                                answer = 0;
                             }
                         }else{//(4,4)
                             if((grid[i][z] != grid[i-1][z]) && (grid[i][z] != grid[i][z-1])){
                                 printf("You lost the game at (4,4)\n");
                                 return(1);
+                            }else{
+                                answer = 0;
                             }
                         }
                         
                         
                     }/* No period */else{//Has period
-                        return(0);
+                        printf("I'm surrounded by nothing FOR (4,0) AND (4,4)");
+                        answer = 0;
                     }//Has Period
                     
                 }
-                
-                
-                
-                
-                
-                
             }// (0,0), (0,4), (4,0), (4,4)
             
             
@@ -250,6 +257,5 @@ int game_results(char grid[height][width]){
     
     //return 1 for player1 winning
     //return 2 for player2 winning
-    return(0);
+    return(answer);
 }
-
