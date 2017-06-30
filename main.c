@@ -191,83 +191,102 @@ int game_results(char grid[height][width]){
     
     for(i = 0; i < height; ++i){
         for(z = 0; z < width; ++z){
-            //Special corner cases: (0,0), (0,4), (4,0), (4,4)
-            if((i == 0 && z == 0) || (i == 0 && z == (width -1)) || (i == (height - 1) && z == 0) || (i == (height - 1) && z == (width - 1))){ // (0,0), (0,4), (4,0), (4,4)
-                if( (i== 0 && z == 0) || (i == 0 && z == (width - 1))){ //(0,0) and (0,4)
-                    if((grid[i+1][z] != '.') &&(grid[i][z] != '.')){/* No period*/
-                        
-                        if(z == 0){//(0,0)
-                            if((grid[i][z] != grid[i][z+1]) && (grid[i][z] != grid[i+1][z])&& (grid[i][z+1] == grid[i+1][z])){
-                                printf("You lost the game at (0,0)\n");
+            if(grid[i][z] != '.'){
+                //Special corner cases: (0,0), (0,4), (4,0), (4,4)
+                if((i == 0 && z == 0) || (i == 0 && z == (width -1)) || (i == (height - 1) && z == 0) || (i == (height - 1) && z == (width - 1))){ // (0,0), (0,4), (4,0), (4,4)
+                    if( (i== 0 && z == 0) || (i == 0 && z == (width - 1))){ //(0,0) and (0,4)
+                        if((grid[i+1][z] != '.')){/* No period*/
+                            if(z == 0){//(0,0)
+                                if((grid[i][z] != grid[i][z+1]) && (grid[i][z+1] == grid[i+1][z])){
+                                    printf("You lost the game at (0,0)\n");
+                                    return(1);
+                                }else{
+                                    answer = 0;
+                                }
+                            }else{//(0,4)
+                                if((grid[i][z] != grid[i][z-1]) && (grid[i][z-1] == grid[i+1][z])){
+                                    printf("You lost the game at (0,4)\n");
+                                    return(1);
+                                }else{
+                                    answer = 0;
+                                }
+                            }
+                            
+                        }else{//Has Period
+                            answer = 0;
+                        }//Has Period
+                    }/*(0,0) and (0,4)*/else{//(4,0) and (4,4)
+                        if((grid[i-1][z] != '.')){//No period
+                            if(z == 0){//(4,0)
+                                if((grid[i][z] != grid[i-1][z]) && (grid[i-1][z] == grid[i][z+1])){
+                                    printf("You lost the game at (4,0\n)");
+                                    return(1);
+                                }else{
+                                    answer = 0;
+                                }
+                            }else{//(4,4)
+                                if((grid[i][z] != grid[i-1][z])&& (grid[i-1][z] == grid[i][z-1])){
+                                    printf("You lost the game at (4,4)\n");
+                                    return(1);
+                                }else{
+                                    answer = 0;
+                                }
+                            }
+                        }/* No period */else{//Has period
+                            answer = 0;
+                        }//Has Period
+                    }
+                }/*Special corner cases: (0,0), (0,4), (4,0), (4,4)*/else if((i == 0) || (z == 0) || i ==(height - 1) || z ==(width - 1)){//outer bounds
+                    if(i == 0){
+                        if((grid[i][z-1] != '.')){
+                            if((grid[i][z] != grid[i][z-1])&&(grid[i][z-1]== grid[i][z+1]) &&(grid[i][z-1] == grid[i+1][z])){//left,right,down
+                                printf("You lost the game at the top row");
                                 return(1);
                             }else{
                                 answer = 0;
                             }
-                        }else{//(0,4)
-                            if((grid[i][z] != grid[i][z-1]) && (grid[i][z] != grid[i+1][z]) && (grid[i][z-1] == grid[i+1][z])){
-                                printf("You lost the game at (0,4)\n");
+                        }//check period for i == 0
+                    }else if(z == 0){
+                        if((grid[i][z+1] != '.')){
+                            if((grid[i][z] != grid[i][z+1])&&(grid[i][z+1]== grid[i-1][z])&&(grid[i][z+1] == grid[i+1][z])){
+                                printf("You lost the game at the left row");
                                 return(1);
+                            }
+                        }else{
+                            answer = 0;
+                        }
+                    }else if(i == (height -1)){
+                        if((grid[i][z+1] != '.')){
+                            if((grid[i][z] != grid[i][z+1]) &&(grid[i][z+1] == grid[i][z-1]) &&(grid[i][z+1] == grid[i-1][z])){
+                                printf("You lost the game at the bottom row");
+                                return(1);
+                            }else{
+                                answer = 0;
+                            }
+                        }else{
+                            answer = 0;
+                        }
+                    }else{
+                        if(z == (width-1)){
+                            
+                            if((grid[i][z-1]!='.')){
+                                
+                                if((grid[i][z] != grid[i][z-1]) &&(grid[i][z-1] == grid[i+1][z]) &&(grid[i][z-1] == grid[i-1][z])){
+                                    printf("You lost the game at the right row");
+                                    return(1);
+                                }else{
+                                    answer = 0;
+                                }
                             }else{
                                 answer = 0;
                             }
                         }
-                        
-                    }/* No period */else{//Has Period
-                        answer = 0;//this is the bug
-                    }//Has Period
-                }/*(0,0) and (0,4)*/else{//(4,0) and (4,4)
-                    if((grid[i-1][z] != '.')&&(grid[i][z] != '.')){//No period
-                        
-                        if(z == 0){//(4,0)
-                            //Corner conditions: the 2 next to it are different than the original.Those 2 are the same.
-                            if((grid[i][z] != grid[i-1][z]) && (grid[i][z] != grid[i][z+1]) && (grid[i-1][z] == grid[i][z+1])){
-                                printf("You lost the game at (4,0\n)");
-                                return(1);
-                            }else{
-                                answer = 0;
-                            }
-                        }else{//(4,4)
-                            if((grid[i][z] != grid[i-1][z]) && (grid[i][z] != grid[i][z-1]) && (grid[i-1][z] == grid[i][z-1])){
-                                printf("You lost the game at (4,4)\n");
-                                return(1);
-                            }else{
-                                answer = 0;
-                            }
-                        }
-                        
-                        
-                    }/* No period */else{//Has period
-                        answer = 0;
-                    }//Has Period
+                    }
                     
-                }
-            }/*Special corner cases: (0,0), (0,4), (4,0), (4,4)*/else if((i == 0) || (z == 0) || i ==(height - 1) || z ==(width - 1)){//outer bounds
-                if(i == 0){
-                    if((grid[i][z-1] != '.')&&(grid[i][z] != '.')){
-                        if((grid[i][z] != grid[i][z-1])&&(grid[i][z] != grid[i][z+1])&&(grid[i][z] != grid[i+1][z])&&(grid[i][z-1]== grid[i][z+1]) &&
-                           (grid[i][z-1] == grid[i+1][z])){//left,right,down
-                            
-                            printf("You lost the game at the top row");
-                            return(1);
-                        }else{
-                            answer = 0;
-                        }
-                        
-                    }//check period for i == 0
-                }else if(z == 0){
-                    if((grid[i][z+1] != '.')&&(grid[i][z] != '.')){
-                        if((grid[i][z] != grid[i][z+1])&&(grid[i][z] != grid[i-1][z])&&(grid[i][z] != grid[i+1][z])&&(grid[i][z+1]== grid[i-1][z]) &&
-                           (grid[i][z+1] == grid[i+1][z])){
-                            printf("You lost the game at the left row");
-                            return(1);
-                        }
-                    }else{
-                        answer = 0;
-                    }
-                }else if(i == (height -1)){
-                    if((grid[i][z+1] != '.')&&(grid[i][z] != '.')){
-                        if((grid[i][z] != grid[i][z+1]) &&(grid[i][z+1] == grid[i][z-1]) &&(grid[i][z+1] == grid[i-1][z])){
-                            printf("You lost the game at the bottom row");
+                }/*outer bounds*/else{
+                    if((grid[i][z+1] != '.')){
+                        if((grid[i][z] != grid[i][z+1]) &&(grid[i][z+1] == grid[i][z-1])&&(grid[i][z+1] == grid[i+1][z])&&(grid[i][z+1] == grid[i-1][z])){
+                            printf("The Middle lost\n");
                             return(1);
                         }else{
                             answer = 0;
@@ -275,39 +294,8 @@ int game_results(char grid[height][width]){
                     }else{
                         answer = 0;
                     }
-                }else{
-                    if(z == (width-1)){
-            
-                        if((grid[i][z-1]!='.')&&(grid[i][z] != '.')){
-                            
-                             if((grid[i][z] != grid[i][z-1]) &&(grid[i][z-1] == grid[i+1][z]) &&(grid[i][z-1] == grid[i-1][z])){
-                                 printf("You lost the game at the right row");
-                                 return(1);
-                             }else{
-                                 printf("It aint working\n");
-                                 answer = 0;
-                             }
-                        }else{
-                            answer = 0;
-                        }
-                    }
                 }
-                
-            }/*outer bounds*/else{
-                if((grid[i][z+1] != '.')&&(grid[i][z] != '.') ){
-                    if((grid[i][z] != grid[i][z+1]) &&(grid[i][z+1] == grid[i][z-1])&&(grid[i][z+1] == grid[i+1][z])&&(grid[i][z+1] == grid[i-1][z])){
-                        printf("The Middle lost\n");
-                        return(1);
-                    }else{
-                        answer =0;
-                    }
-                }else{
-                    answer = 0;
-                }
-            }
-            
-            
-            
+            }//checks in ther is period on current value
         }//horizontal for loop
     }//vertical for loop
     
