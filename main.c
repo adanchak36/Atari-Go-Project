@@ -13,6 +13,8 @@ void player2moving(int *player2_i, int *player2_z);// Second human player for 2 
 
 int game_results(char grid[height][width]);
 
+int player_win_check(char player_lost);
+
 //check score function (entire game function)
 //void playgame()
 
@@ -198,15 +200,13 @@ int game_results(char grid[height][width]){
                         if((grid[i+1][z] != '.')){/* No period*/
                             if(z == 0){//(0,0)
                                 if((grid[i][z] != grid[i][z+1]) && (grid[i][z+1] == grid[i+1][z])){
-                                    printf("You lost the game at (0,0)\n");
-                                    return(1);
+                                    return(player_win_check(grid[i][z]));
                                 }else{
                                     answer = 0;
                                 }
                             }else{//(0,4)
                                 if((grid[i][z] != grid[i][z-1]) && (grid[i][z-1] == grid[i+1][z])){
-                                    printf("You lost the game at (0,4)\n");
-                                    return(1);
+                                    return(player_win_check(grid[i][z]));
                                 }else{
                                     answer = 0;
                                 }
@@ -219,15 +219,13 @@ int game_results(char grid[height][width]){
                         if((grid[i-1][z] != '.')){//No period
                             if(z == 0){//(4,0)
                                 if((grid[i][z] != grid[i-1][z]) && (grid[i-1][z] == grid[i][z+1])){
-                                    printf("You lost the game at (4,0\n)");
-                                    return(1);
+                                    return(player_win_check(grid[i][z]));
                                 }else{
                                     answer = 0;
                                 }
                             }else{//(4,4)
                                 if((grid[i][z] != grid[i-1][z])&& (grid[i-1][z] == grid[i][z-1])){
-                                    printf("You lost the game at (4,4)\n");
-                                    return(1);
+                                    return(player_win_check(grid[i][z]));
                                 }else{
                                     answer = 0;
                                 }
@@ -240,8 +238,7 @@ int game_results(char grid[height][width]){
                     if(i == 0){
                         if((grid[i][z-1] != '.')){
                             if((grid[i][z] != grid[i][z-1])&&(grid[i][z-1]== grid[i][z+1]) &&(grid[i][z-1] == grid[i+1][z])){//left,right,down
-                                printf("You lost the game at the top row");
-                                return(1);
+                                return(player_win_check(grid[i][z]));
                             }else{
                                 answer = 0;
                             }
@@ -249,8 +246,7 @@ int game_results(char grid[height][width]){
                     }else if(z == 0){
                         if((grid[i][z+1] != '.')){
                             if((grid[i][z] != grid[i][z+1])&&(grid[i][z+1]== grid[i-1][z])&&(grid[i][z+1] == grid[i+1][z])){
-                                printf("You lost the game at the left row");
-                                return(1);
+                                return(player_win_check(grid[i][z]));
                             }
                         }else{
                             answer = 0;
@@ -258,8 +254,7 @@ int game_results(char grid[height][width]){
                     }else if(i == (height -1)){
                         if((grid[i][z+1] != '.')){
                             if((grid[i][z] != grid[i][z+1]) &&(grid[i][z+1] == grid[i][z-1]) &&(grid[i][z+1] == grid[i-1][z])){
-                                printf("You lost the game at the bottom row");
-                                return(1);
+                                return(player_win_check(grid[i][z]));
                             }else{
                                 answer = 0;
                             }
@@ -272,8 +267,7 @@ int game_results(char grid[height][width]){
                             if((grid[i][z-1]!='.')){
                                 
                                 if((grid[i][z] != grid[i][z-1]) &&(grid[i][z-1] == grid[i+1][z]) &&(grid[i][z-1] == grid[i-1][z])){
-                                    printf("You lost the game at the right row");
-                                    return(1);
+                                    return(player_win_check(grid[i][z]));
                                 }else{
                                     answer = 0;
                                 }
@@ -286,8 +280,7 @@ int game_results(char grid[height][width]){
                 }/*outer bounds*/else{
                     if((grid[i][z+1] != '.')){
                         if((grid[i][z] != grid[i][z+1]) &&(grid[i][z+1] == grid[i][z-1])&&(grid[i][z+1] == grid[i+1][z])&&(grid[i][z+1] == grid[i-1][z])){
-                            printf("The Middle lost\n");
-                            return(1);
+                            return(player_win_check(grid[i][z]));
                         }else{
                             answer = 0;
                         }
@@ -304,3 +297,16 @@ int game_results(char grid[height][width]){
     //return 2 for player2 winning
     return(answer);
 }
+
+
+
+int player_win_check(char player_lost){//called inside nested if/elif/else in game_results
+    if(player_lost == 'X'){
+        printf("Player 1 Wins!!!");
+    }else{
+        printf("Player 2 Wins!!!");
+    }
+    
+    return(1);
+}
+
