@@ -1,0 +1,3 @@
+-Known Bugs
+  - Putting character instead of integer for coordinates crashes program. 
+  - Two same player pieces surrounded does not constitute win. 
